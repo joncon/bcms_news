@@ -1,0 +1,15 @@
+-#use content instead of content_for to overide content_for method.
+-#content :html_head do
+=# auto_discovery_link_tag :rss, news_articles_url, "RSS Feed for News Articles"
+- for article in @articles
+  .news-item-browser
+    %h3= link_to h(article.name), news_article_path(article.route_params)
+    %p.attribution
+      =attribution(article, article.release_date)
+    %p.summary
+      -if article.summary.blank? 
+        =article.body.html_safe 
+      -else
+        =article.summary
+        %br
+        =link_to  "Read More >>", news_article_path(article.route_params)
