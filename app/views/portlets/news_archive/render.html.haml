@@ -1,0 +1,20 @@
+-#content :html_head do
+=#auto_discovery_link_tag :rss, news_articles_url, "RSS Feed for News Articles"
+.toggleall
+   
+%ul.archived-news-articles.depth-1
+  - @articles.group_by(&:year).sort_by(&:first).reverse.each do |year, year_articles|
+    %li.year
+      %h2.year-title.title=year
+      %ul.year-articles
+        - year_articles.group_by(&:month).sort_by(&:first).reverse.each do |month, month_articles|
+          %li.month.depth-2
+            %h3.month-title.title=Date::MONTHNAMES[month]
+            %ul.month-articles.depth-3
+              - for article in month_articles.sort_by(&:release_date).reverse
+                %li.news-item
+                  - unless article.release_date.blank?
+                    %span.release-date=article.release_date.to_s(:day)
+                  = link_to "#{h(article.name)}".html_safe, news_article_path(article.route_params)
+                  - unless article.summary.blank?
+                    %p.article-summary= article.summary.html_safe
